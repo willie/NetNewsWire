@@ -24,6 +24,8 @@ import Articles
 	// Called after every mark, with the flag that was applied, so undo and redo can update
 	// the UI in the right direction. Unlike completion, it’s not one-shot.
 	let didMark: ((Bool) -> Void)?
+	private let markedArticles: [Article]
+	private var didNoteAttention = false // Redo calls perform again; count a star once.
 
 	init?(initialArticles: [Article], statusKey: ArticleStatus.Key, flag: Bool, undoManager: UndoManager, completion: (() -> Void)? = nil, didMark: ((Bool) -> Void)? = nil) {
 
@@ -32,6 +34,7 @@ import Articles
 		if articlesToMark.isEmpty {
 			return nil
 		}
+		self.markedArticles = articlesToMark
 		self.articleIDsByAccountID = Dictionary(grouping: articlesToMark, by: { $0.accountID }).mapValues { Set($0.articleIDs()) }
 
 		self.flag = flag
@@ -55,6 +58,12 @@ import Articles
 
     func perform() {
 		mark(statusKey, flag)
+		if statusKey == .starred && flag && !didNoteAttention {
+			didNoteAttention = true
+			for article in markedArticles {
+				article.feed?.noteArticleStarred()
+			}
+		}
  		registerUndo()
     }
 

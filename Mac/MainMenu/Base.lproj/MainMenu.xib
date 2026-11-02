@@ -427,6 +427,12 @@
                                                 <action selector="sortFeedsByUnreadCount:" target="-1" id="mD9-jP-4sR"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Attention" id="aT6-nC-3xV">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="sortFeedsByAttention:" target="-1" id="rP7-eM-5kD"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="kV2-sN-8wQ"/>
                                         <menuItem title="Ascending" id="aF3-qR-7vN">
                                             <modifierMask key="keyEquivalentModifierMask"/>

@@ -34,6 +34,9 @@ public extension Feed {
 		case folderRelationship
 		case lastCheckDate
 		case lastResponseCode
+		case attentionFollowedCount
+		case attentionSharedCount
+		case attentionStarredCount
 	}
 }
 

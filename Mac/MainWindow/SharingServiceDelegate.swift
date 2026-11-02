@@ -25,6 +25,14 @@ import AppKit
 			.joined(separator: ", ")
 	}
 
+	func sharingService(_ sharingService: NSSharingService, didShareItems items: [Any]) {
+		MainActor.assumeIsolated {
+			for item in items {
+				(item as? ArticlePasteboardWriter)?.article.feed?.noteArticleShared()
+			}
+		}
+	}
+
 	func sharingService(_ sharingService: NSSharingService, sourceWindowForShareItems items: [Any], sharingContentScope: UnsafeMutablePointer<NSSharingService.SharingContentScope>) -> NSWindow? {
 		return window
 	}

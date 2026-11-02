@@ -193,6 +193,25 @@ import Articles
 		}
 	}
 
+	// MARK: - Attention
+
+	/// How much the user engages with this feed: articles opened in the browser, shared, and starred.
+	public var attentionScore: Int {
+		settings.attentionFollowedCount + settings.attentionSharedCount + settings.attentionStarredCount
+	}
+
+	public func noteArticleFollowed() {
+		settings.attentionFollowedCount += 1
+	}
+
+	public func noteArticleShared() {
+		settings.attentionSharedCount += 1
+	}
+
+	public func noteArticleStarred() {
+		settings.attentionStarredCount += 1
+	}
+
 	// MARK: - DisplayNameProvider
 
 	public var nameForDisplay: String {

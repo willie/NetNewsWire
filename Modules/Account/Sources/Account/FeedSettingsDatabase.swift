@@ -33,6 +33,9 @@ final class FeedSettingsDatabase: Sendable {
 		case folderRelationship
 		case lastCheckDate
 		case lastResponseCode
+		case attentionFollowedCount
+		case attentionSharedCount
+		case attentionStarredCount
 	}
 
 	struct Row {
@@ -52,6 +55,9 @@ final class FeedSettingsDatabase: Sendable {
 		let folderRelationship: [String: String]?
 		let lastCheckDate: Date?
 		let lastResponseCode: Int?
+		let attentionFollowedCount: Int
+		let attentionSharedCount: Int
+		let attentionStarredCount: Int
 	}
 
 	let databasePath: String
@@ -68,6 +74,15 @@ final class FeedSettingsDatabase: Sendable {
 			database.runCreateStatements(Self.tableCreationStatements)
 			if !database.columnExists("lastResponseCode", inTableWithName: "feedSettings") {
 				database.executeStatements("ALTER TABLE feedSettings ADD COLUMN lastResponseCode INTEGER;")
+			}
+			if !database.columnExists("attentionFollowedCount", inTableWithName: "feedSettings") {
+				database.executeStatements("ALTER TABLE feedSettings ADD COLUMN attentionFollowedCount INTEGER NOT NULL DEFAULT 0;")
+			}
+			if !database.columnExists("attentionSharedCount", inTableWithName: "feedSettings") {
+				database.executeStatements("ALTER TABLE feedSettings ADD COLUMN attentionSharedCount INTEGER NOT NULL DEFAULT 0;")
+			}
+			if !database.columnExists("attentionStarredCount", inTableWithName: "feedSettings") {
+				database.executeStatements("ALTER TABLE feedSettings ADD COLUMN attentionStarredCount INTEGER NOT NULL DEFAULT 0;")
 			}
 		}
 		vacuumIfNeeded()
@@ -272,7 +287,7 @@ final class FeedSettingsDatabase: Sendable {
 private extension FeedSettingsDatabase {
 
 	static let tableCreationStatements = """
-	CREATE TABLE IF NOT EXISTS feedSettings (feedURL TEXT PRIMARY KEY, feedID TEXT NOT NULL DEFAULT '', homePageURL TEXT, iconURL TEXT, faviconURL TEXT, editedName TEXT, contentHash TEXT, newArticleNotificationsEnabled INTEGER NOT NULL DEFAULT 0, readerViewAlwaysEnabled INTEGER NOT NULL DEFAULT 0, authors TEXT, conditionalGetInfoLastModified TEXT, conditionalGetInfoEtag TEXT, conditionalGetInfoDate REAL, cacheControlInfoDateCreated REAL, cacheControlInfoMaxAge REAL, externalID TEXT, folderRelationship TEXT, lastCheckDate REAL, lastResponseCode INTEGER);
+	CREATE TABLE IF NOT EXISTS feedSettings (feedURL TEXT PRIMARY KEY, feedID TEXT NOT NULL DEFAULT '', homePageURL TEXT, iconURL TEXT, faviconURL TEXT, editedName TEXT, contentHash TEXT, newArticleNotificationsEnabled INTEGER NOT NULL DEFAULT 0, readerViewAlwaysEnabled INTEGER NOT NULL DEFAULT 0, authors TEXT, conditionalGetInfoLastModified TEXT, conditionalGetInfoEtag TEXT, conditionalGetInfoDate REAL, cacheControlInfoDateCreated REAL, cacheControlInfoMaxAge REAL, externalID TEXT, folderRelationship TEXT, lastCheckDate REAL, lastResponseCode INTEGER, attentionFollowedCount INTEGER NOT NULL DEFAULT 0, attentionSharedCount INTEGER NOT NULL DEFAULT 0, attentionStarredCount INTEGER NOT NULL DEFAULT 0);
 	"""
 
 	func row(from resultSet: FMResultSet) -> Row {
@@ -327,7 +342,10 @@ private extension FeedSettingsDatabase {
 			externalID: resultSet.swiftString(forColumn: Column.externalID.rawValue),
 			folderRelationship: folderRelationship,
 			lastCheckDate: lastCheckDate,
-			lastResponseCode: lastResponseCode
+			lastResponseCode: lastResponseCode,
+			attentionFollowedCount: Int(resultSet.int(forColumn: Column.attentionFollowedCount.rawValue)),
+			attentionSharedCount: Int(resultSet.int(forColumn: Column.attentionSharedCount.rawValue)),
+			attentionStarredCount: Int(resultSet.int(forColumn: Column.attentionStarredCount.rawValue))
 		)
 	}
 }

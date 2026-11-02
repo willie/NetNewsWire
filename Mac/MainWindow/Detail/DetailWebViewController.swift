@@ -221,6 +221,7 @@ extension DetailWebViewController: WKNavigationDelegate, WKUIDelegate {
 	func openInBrowser(_ url: URL, flags: NSEvent.ModifierFlags) {
 		let invert = flags.contains(.shift) || flags.contains(.command)
 		Browser.open(url.absoluteString, invertPreference: invert)
+		article?.feed?.noteArticleFollowed()
 	}
 
 	// WKNavigationDelegate

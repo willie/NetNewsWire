@@ -26,7 +26,16 @@ import Account
 
 	func sortedByUnreadCountWithFoldersAtEnd(ascending: Bool) -> [Node] {
 
-		Node.nodesSortedByUnreadCountWithFoldersAtEnd(self, ascending: ascending)
+		Node.nodesSortedByCountWithFoldersAtEnd(self, ascending: ascending) { node in
+			(node.representedObject as? UnreadCountProvider)?.unreadCount ?? 0
+		}
+	}
+
+	func sortedByAttentionWithFoldersAtEnd(ascending: Bool) -> [Node] {
+
+		Node.nodesSortedByCountWithFoldersAtEnd(self, ascending: ascending) { node in
+			(node.representedObject as? Feed)?.attentionScore ?? 0
+		}
 	}
 
 	func sorted(by sortType: SidebarSortType, ascending: Bool = true) -> [Node] {
@@ -38,6 +47,8 @@ import Account
 		case .byUnreadCount:
 			// Direction applies to the count only; ties stay alphabetical.
 			return sortedByUnreadCountWithFoldersAtEnd(ascending: ascending)
+		case .byAttention:
+			return sortedByAttentionWithFoldersAtEnd(ascending: ascending)
 		}
 
 		if ascending {
@@ -90,7 +101,7 @@ import Account
 		}
 	}
 
-	class func nodesSortedByUnreadCountWithFoldersAtEnd(_ nodes: [Node], ascending: Bool) -> [Node] {
+	class func nodesSortedByCountWithFoldersAtEnd(_ nodes: [Node], ascending: Bool, count: (Node) -> Int) -> [Node] {
 
 		// Alphabetical tiebreaker regardless of direction
 		return nodes.sorted { (node1, node2) -> Bool in
@@ -102,8 +113,8 @@ import Account
 				return true
 			}
 
-			let count1 = (node1.representedObject as? UnreadCountProvider)?.unreadCount ?? 0
-			let count2 = (node2.representedObject as? UnreadCountProvider)?.unreadCount ?? 0
+			let count1 = count(node1)
+			let count2 = count(node2)
 
 			if count1 != count2 {
 				return ascending ? count1 < count2 : count1 > count2

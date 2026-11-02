@@ -168,6 +168,36 @@ import Articles
 		}
 	}
 
+	/// Number of articles opened in the browser.
+	var attentionFollowedCount = 0 {
+		didSet {
+			if attentionFollowedCount != oldValue {
+				database.setInt(attentionFollowedCount, for: feedURL, column: .attentionFollowedCount)
+				postSettingDidChange(.attentionFollowedCount)
+			}
+		}
+	}
+
+	/// Number of articles shared.
+	var attentionSharedCount = 0 {
+		didSet {
+			if attentionSharedCount != oldValue {
+				database.setInt(attentionSharedCount, for: feedURL, column: .attentionSharedCount)
+				postSettingDidChange(.attentionSharedCount)
+			}
+		}
+	}
+
+	/// Number of articles starred.
+	var attentionStarredCount = 0 {
+		didSet {
+			if attentionStarredCount != oldValue {
+				database.setInt(attentionStarredCount, for: feedURL, column: .attentionStarredCount)
+				postSettingDidChange(.attentionStarredCount)
+			}
+		}
+	}
+
 	/// Create from database row (bulk load at startup).
 	init(feedURL: String, row: FeedSettingsDatabase.Row, database: FeedSettingsDatabase) {
 		self.feedURL = feedURL
@@ -188,6 +218,9 @@ import Articles
 		self.folderRelationship = row.folderRelationship
 		self.lastCheckDate = row.lastCheckDate
 		self.lastResponseCode = row.lastResponseCode
+		self.attentionFollowedCount = row.attentionFollowedCount
+		self.attentionSharedCount = row.attentionSharedCount
+		self.attentionStarredCount = row.attentionStarredCount
 	}
 
 	/// Create for a new feed not yet in the database.

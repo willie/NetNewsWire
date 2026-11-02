@@ -553,6 +553,18 @@
         }
       }
     },
+    "aT6-nC-3xV.title" : {
+      "comment" : "Class = \"NSMenuItem\"; title = \"Attention\"; ObjectID = \"aT6-nC-3xV\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Attention"
+          }
+        }
+      }
+    },
     "bL5-rT-xW7.title" : {
       "comment" : "Class = \"NSMenuItem\"; title = \"Unread Count\"; ObjectID = \"bL5-rT-xW7\";",
       "extractionState" : "extracted_with_value",
