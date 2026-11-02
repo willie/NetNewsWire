@@ -12,6 +12,7 @@ enum SidebarSortType: Int {
 	case alphabetically = 0
 	case byUnreadCount = 1
 	case byAttention = 2
+	case byLastUpdate = 3
 }
 
 extension Notification.Name {
