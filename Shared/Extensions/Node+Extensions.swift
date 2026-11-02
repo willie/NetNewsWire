@@ -26,14 +26,24 @@ import Account
 
 	func sortedByUnreadCountWithFoldersAtEnd(ascending: Bool) -> [Node] {
 
-		Node.nodesSortedByCountWithFoldersAtEnd(self, ascending: ascending) { node in
+		Node.nodesSortedByKeyWithFoldersAtEnd(self, ascending: ascending) { node in
 			(node.representedObject as? UnreadCountProvider)?.unreadCount ?? 0
+		}
+	}
+
+	func sortedByLastUpdateWithFoldersAtEnd(ascending: Bool) -> [Node] {
+
+		Node.nodesSortedByKeyWithFoldersAtEnd(self, ascending: ascending) { node in
+			guard let feed = node.representedObject as? Feed else {
+				return Date.distantPast
+			}
+			return feed.account?.lastUpdateDates[feed.feedID] ?? .distantPast
 		}
 	}
 
 	func sortedByAttentionWithFoldersAtEnd(ascending: Bool) -> [Node] {
 
-		Node.nodesSortedByCountWithFoldersAtEnd(self, ascending: ascending) { node in
+		Node.nodesSortedByKeyWithFoldersAtEnd(self, ascending: ascending) { node in
 			(node.representedObject as? Feed)?.attentionScore ?? 0
 		}
 	}
@@ -49,6 +59,8 @@ import Account
 			return sortedByUnreadCountWithFoldersAtEnd(ascending: ascending)
 		case .byAttention:
 			return sortedByAttentionWithFoldersAtEnd(ascending: ascending)
+		case .byLastUpdate:
+			return sortedByLastUpdateWithFoldersAtEnd(ascending: ascending)
 		}
 
 		if ascending {
@@ -101,7 +113,7 @@ import Account
 		}
 	}
 
-	class func nodesSortedByCountWithFoldersAtEnd(_ nodes: [Node], ascending: Bool, count: (Node) -> Int) -> [Node] {
+	class func nodesSortedByKeyWithFoldersAtEnd<Key: Comparable>(_ nodes: [Node], ascending: Bool, key: (Node) -> Key) -> [Node] {
 
 		// Alphabetical tiebreaker regardless of direction
 		return nodes.sorted { (node1, node2) -> Bool in
@@ -113,11 +125,11 @@ import Account
 				return true
 			}
 
-			let count1 = count(node1)
-			let count2 = count(node2)
+			let key1 = key(node1)
+			let key2 = key(node2)
 
-			if count1 != count2 {
-				return ascending ? count1 < count2 : count1 > count2
+			if key1 != key2 {
+				return ascending ? key1 < key2 : key1 > key2
 			}
 
 			guard let obj1 = node1.representedObject as? DisplayNameProvider, let obj2 = node2.representedObject as? DisplayNameProvider else {
