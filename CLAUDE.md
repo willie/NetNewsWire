@@ -77,3 +77,15 @@ Don’t do force unwrapping of optionals.
 ## Things to Know
 
 Just because unit tests pass doesn’t mean a given bug is fixed. It may not have a test. It may not even be testable — it may require manual testing.
+
+## Fork Workflow (willie/NetNewsWire)
+
+This is Willie’s fork. `main` is upstream plus his features and is the build he runs; it never goes upstream.
+
+- `upstream` = Ranchero-Software/NetNewsWire, `origin` = willie/NetNewsWire.
+- `sidebar-sort-options`: upstream PR #5149 (sort feeds by name/unread count). Only that PR’s commits; never commit fork-only work here.
+- `attention-sort`: fork-only Attention sort (per-feed open/share/star counts in FeedSettings, ported from NetNewsWire Lite 4).
+- Feature branches merge into `main` with `--no-ff`.
+- Updating: `git fetch upstream`, then merge `upstream/main` into `main` and into each upstream PR branch, and push. Merge, don’t rebase — PR branches are shared on GitHub.
+- `rerere` is enabled in this clone’s `.git/config` so repeated conflict resolutions are reused.
+- Upstream PRs need a Discourse Work-category discussion first, must merge cleanly, add no warnings, and note LLM use (see CONTRIBUTING.md).
