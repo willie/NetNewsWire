@@ -786,6 +786,8 @@ private extension ReaderAPIAccountDelegate {
 		}
 	}
 
+	static let freshRSSDefaultCategoryTagID = "user/-/label/Uncategorized"
+
 	@MainActor func syncFolders(_ account: Account, _ tags: [ReaderAPITag]?) {
 		Self.logger.debug("ReaderAPIAccountDelegate: syncFolders")
 
@@ -795,11 +797,16 @@ private extension ReaderAPIAccountDelegate {
 		let folderTags: [ReaderAPITag]
 		if variant == .inoreader {
 			folderTags = tags.filter { $0.type == "folder" }
+		} else if variant == .freshRSS {
+			// FreshRSS puts every feed in a category. Its default category stands in for the top level,
+			// so its feeds stay at the account’s top level instead of in a folder.
+			folderTags = tags.filter { $0.tagID.contains("/label/") && $0.tagID != Self.freshRSSDefaultCategoryTagID }
 		} else {
 			folderTags = tags.filter { $0.tagID.contains("/label/") }
 		}
 
-		guard !folderTags.isEmpty else { return }
+		// With only the FreshRSS default category, folderTags is empty but the sync is still valid.
+		guard !folderTags.isEmpty || tags.contains(where: { $0.tagID == Self.freshRSSDefaultCategoryTagID }) else { return }
 
 		let readerFolderExternalIDs = folderTags.compactMap { $0.tagID }
 
