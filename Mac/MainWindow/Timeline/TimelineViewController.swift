@@ -414,8 +414,9 @@ final class TimelineViewController: NSViewController, UndoableCommandRunner, Unr
 	// MARK: - Actions
 
 	@objc func openArticleInBrowser(_ sender: Any?) {
-		if let link = oneSelectedArticle?.preferredLink {
+		if let article = oneSelectedArticle, let link = article.preferredLink {
 			Browser.open(link, invertPreference: NSApp.currentEvent?.modifierFlags.contains(.shift) ?? false)
+			article.feed?.noteArticleFollowed()
 		}
 	}
 

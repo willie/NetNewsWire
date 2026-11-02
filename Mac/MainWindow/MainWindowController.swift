@@ -355,6 +355,10 @@ final class MainWindowController: NSWindowController, NSUserInterfaceValidations
 			return validateSortFeeds(item, isOn: AppDefaults.sidebarSortType == .byUnreadCount)
 		}
 
+		if item.action == #selector(sortFeedsByAttention(_:)) {
+			return validateSortFeeds(item, isOn: AppDefaults.sidebarSortType == .byAttention)
+		}
+
 		if item.action == #selector(sortFeedsAscending(_:)) {
 			return validateSortFeeds(item, isOn: AppDefaults.sidebarSortAscending)
 		}
@@ -427,6 +431,7 @@ final class MainWindowController: NSWindowController, NSUserInterfaceValidations
 	@IBAction func openArticleInBrowser(_ sender: Any?) {
 		if let link = currentLink {
 			Browser.open(link, invertPreference: NSApp.currentEvent?.modifierFlags.contains(.shift) ?? false)
+			oneSelectedArticle?.feed?.noteArticleFollowed()
 		}
 	}
 
@@ -448,6 +453,7 @@ final class MainWindowController: NSWindowController, NSUserInterfaceValidations
 		}
 		if let link = currentLink {
 			Browser.open(link, inBackground: !AppDefaults.openInBrowserInBackground)
+			oneSelectedArticle?.feed?.noteArticleFollowed()
 		}
 	}
 
@@ -671,7 +677,7 @@ final class MainWindowController: NSWindowController, NSUserInterfaceValidations
 
 	@IBAction func sortFeedsByName(_ sender: Any?) {
 		// Switching sort type resets direction to that type’s natural default,
-		// like clicking a different column header: name A–Z, most unread first.
+		// like clicking a different column header: name A–Z, most unread or most attention first.
 		guard AppDefaults.sidebarSortType != .alphabetically else {
 			return
 		}
@@ -683,6 +689,13 @@ final class MainWindowController: NSWindowController, NSUserInterfaceValidations
 			return
 		}
 		AppDefaults.setSidebarSort(.byUnreadCount, ascending: false)
+	}
+
+	@IBAction func sortFeedsByAttention(_ sender: Any?) {
+		guard AppDefaults.sidebarSortType != .byAttention else {
+			return
+		}
+		AppDefaults.setSidebarSort(.byAttention, ascending: false)
 	}
 
 	@IBAction func sortFeedsAscending(_ sender: Any?) {
