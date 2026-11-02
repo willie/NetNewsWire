@@ -661,7 +661,7 @@ private extension SidebarOutlineDataSource {
 	}
 
 	func indexWhereDraggedFeedWouldAppear(_ parentNode: Node, _ draggedFeed: PasteboardFeed) -> Int {
-		// The dragged feed’s unread count and attention aren’t known here, so its sorted position can’t be predicted.
+		// The dragged feed’s unread count, last update and attention aren’t known here, so its sorted position can’t be predicted.
 		guard AppDefaults.sidebarSortType == .alphabetically else {
 			return NSOutlineViewDropOnItemIndex
 		}

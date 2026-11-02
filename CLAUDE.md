@@ -83,10 +83,9 @@ Just because unit tests pass doesn’t mean a given bug is fixed. It may not hav
 This is Willie’s fork. `main` is upstream plus his features and builds NNW+ (installed as /Applications/NNW+.app); it never goes upstream.
 
 - `upstream` = Ranchero-Software/NetNewsWire, `origin` = willie/NetNewsWire.
-- `sidebar-sort-options`: upstream PR #5149 (sort feeds by name/unread count). Only that PR’s commits; never commit NNW+-only work here.
+- `sidebar-sort-options`: upstream PR #5149 (sort feeds by name, unread count, last update). Only that PR’s commits; never commit NNW+-only work here.
 - `attention-sort`: NNW+ only, not sent upstream: Attention sort (per-feed open/share/star counts in FeedSettings, ported from NetNewsWire Lite 4).
 - `freshrss-root-feeds`: NNW+ only, not sent upstream: FreshRSS’s default “Uncategorized” category shows as the account top level instead of a folder.
-- `last-update-sort`: NNW+ only, not sent upstream: Last Update sort (newest article per feed, from `Account.fetchLastUpdateDates`), branched off `attention-sort`.
 - Feature branches merge into `main` with `--no-ff`.
 - Updating: `git fetch upstream`, then merge `upstream/main` into `main` and into each upstream PR branch, and push. Merge, don’t rebase — PR branches are shared on GitHub.
 - `rerere` is enabled in this clone’s `.git/config` so repeated conflict resolutions are reused.
