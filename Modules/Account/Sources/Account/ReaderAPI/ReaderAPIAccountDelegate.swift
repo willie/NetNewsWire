@@ -66,13 +66,7 @@ final class ReaderAPIAccountDelegate: AccountDelegate {
 	}
 	let refreshProgress = RSProgress()
 
-	var behaviors: AccountBehaviors {
-		var behaviors: AccountBehaviors = [.disallowFeedInMultipleFolders]
-		if variant == .freshRSS {
-			behaviors.append(.disallowFeedInRootFolder)
-		}
-		return behaviors
-	}
+	let behaviors: AccountBehaviors = [.disallowFeedInMultipleFolders]
 
 	@MainActor var server: String? {
 		caller.server
@@ -558,10 +552,19 @@ final class ReaderAPIAccountDelegate: AccountDelegate {
 
 				guard
 					let subscriptionID = feed.externalID,
-					let sourceTag = (sourceContainer as? Folder)?.name,
-					let destinationFolder = destinationContainer as? Folder,
-					let destinationTag = destinationFolder.name
+					let sourceTag = (sourceContainer as? Folder)?.name
 				else {
+					throw AccountError.invalidParameter
+				}
+
+				// FreshRSS’s default category is the account’s top level, so moving to the top level moves to it.
+				let destinationFolder = destinationContainer as? Folder
+				let destinationTag: String
+				if let destinationFolder, let name = destinationFolder.name {
+					destinationTag = name
+				} else if destinationContainer is Account && variant == .freshRSS {
+					destinationTag = Self.freshRSSDefaultCategoryName
+				} else {
 					throw AccountError.invalidParameter
 				}
 
@@ -570,7 +573,9 @@ final class ReaderAPIAccountDelegate: AccountDelegate {
 
 				do {
 					try await caller.moveSubscription(subscriptionID: subscriptionID, sourceTag: sourceTag, destinationTag: destinationTag)
-					Self.ensureFolderExternalID(destinationFolder)
+					if let destinationFolder {
+						Self.ensureFolderExternalID(destinationFolder)
+					}
 					sourceContainer.removeFeedFromTreeAtTopLevel(feed)
 					destinationContainer.addFeedToTreeAtTopLevel(feed)
 				} catch {
@@ -786,7 +791,8 @@ private extension ReaderAPIAccountDelegate {
 		}
 	}
 
-	static let freshRSSDefaultCategoryTagID = "user/-/label/Uncategorized"
+	static let freshRSSDefaultCategoryName = "Uncategorized"
+	static let freshRSSDefaultCategoryTagID = "user/-/label/\(freshRSSDefaultCategoryName)"
 
 	@MainActor func syncFolders(_ account: Account, _ tags: [ReaderAPITag]?) {
 		Self.logger.debug("ReaderAPIAccountDelegate: syncFolders")
