@@ -64,6 +64,24 @@
                                 <action selector="unreadCountDisplaySettingDidChange:" target="-2" id="uC3-aC-tNc"/>
                             </connections>
                         </button>
+                        <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hRa-lB-l01">
+                            <rect key="frame" x="-2" y="425" width="106" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Timeline:" id="hRa-lC-c01">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hRa-cK-b01">
+                            <rect key="frame" x="110" y="425" width="283" height="16"/>
+                            <buttonCell key="cell" type="check" title="Hide read articles" bezelStyle="regularSquare" imagePosition="left" inset="2" id="hRa-bC-c01">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <binding destination="mAF-gO-1PI" name="value" keyPath="values.hideReadArticles" id="hRa-bN-d01"/>
+                            </connections>
+                        </button>
                         <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="uCs-sP-rTr">
                             <rect key="frame" x="0.0" y="442" width="392" height="5"/>
                         </box>
@@ -373,7 +391,13 @@
                         <constraint firstAttribute="trailing" secondItem="uC3-hD-nRb" secondAttribute="trailing" id="uCi-tR-r03"/>
                         <constraint firstItem="f4H-6I-KoK" firstAttribute="firstBaseline" secondItem="uC1-sH-wRb" secondAttribute="firstBaseline" id="uCj-bL-lbl"/>
                         <constraint firstItem="f4H-6I-KoK" firstAttribute="leading" secondItem="Ut3-yd-q6G" secondAttribute="leading" id="uCk-lD-lbl"/>
-                        <constraint firstItem="uCs-sP-rTr" firstAttribute="top" secondItem="uC3-hD-nRb" secondAttribute="bottom" constant="20" id="uCl-tP-sep"/>
+                        <constraint firstItem="hRa-cK-b01" firstAttribute="top" secondItem="uC3-hD-nRb" secondAttribute="bottom" constant="20" id="hRa-cN-x01"/>
+                        <constraint firstItem="hRa-cK-b01" firstAttribute="leading" secondItem="Z6O-Zt-V1g" secondAttribute="leading" id="hRa-cN-x02"/>
+                        <constraint firstAttribute="trailing" secondItem="hRa-cK-b01" secondAttribute="trailing" id="hRa-cN-x03"/>
+                        <constraint firstItem="hRa-lB-l01" firstAttribute="firstBaseline" secondItem="hRa-cK-b01" secondAttribute="firstBaseline" id="hRa-cN-x04"/>
+                        <constraint firstItem="hRa-lB-l01" firstAttribute="leading" secondItem="Ut3-yd-q6G" secondAttribute="leading" id="hRa-cN-x05"/>
+                        <constraint firstItem="hRa-lB-l01" firstAttribute="trailing" secondItem="pR2-Bf-7Fd" secondAttribute="trailing" id="hRa-cN-x06"/>
+                        <constraint firstItem="uCs-sP-rTr" firstAttribute="top" secondItem="hRa-cK-b01" secondAttribute="bottom" constant="20" id="uCl-tP-sep"/>
                         <constraint firstItem="uCs-sP-rTr" firstAttribute="leading" secondItem="Ut3-yd-q6G" secondAttribute="leading" id="uCm-lD-sep"/>
                         <constraint firstAttribute="trailing" secondItem="uCs-sP-rTr" secondAttribute="trailing" constant="1" id="uCn-tR-sep"/>
                         <constraint firstItem="Z6O-Zt-V1g" firstAttribute="top" secondItem="uCs-sP-rTr" secondAttribute="bottom" constant="20" id="uCo-tP-z6o"/>

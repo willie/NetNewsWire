@@ -117,6 +117,7 @@ final class TimelineContainerViewController: NSViewController {
 
 	private func userDefaultsDidChange() {
 		layout = AppDefaults.timelineLayout
+		updateReadFilterButton()
 	}
 
 	// MARK: - API

@@ -44,7 +44,7 @@ final class TimelineViewController: NSViewController, UndoableCommandRunner, Unr
 		if let sidebarItemID = timelineFeed.sidebarItemID, let readFiltered = readFilterEnabledTable[sidebarItemID] {
 			return readFiltered
 		}
-		return timelineFeed.defaultReadFilterType == .read
+		return timelineFeed.defaultReadFilterType == .read || AppDefaults.hideReadArticles
 	}
 
 	var isCleanUpAvailable: Bool {
@@ -213,6 +213,13 @@ final class TimelineViewController: NSViewController, UndoableCommandRunner, Unr
 		didSet {
 			if fontSize != oldValue {
 				fontSizeDidChange()
+			}
+		}
+	}
+	private var hideReadArticles = AppDefaults.hideReadArticles {
+		didSet {
+			if hideReadArticles != oldValue {
+				fetchAndReplacePreservingSelection()
 			}
 		}
 	}
@@ -778,6 +785,7 @@ final class TimelineViewController: NSViewController, UndoableCommandRunner, Unr
 
 	@MainActor func userDefaultsDidChange() {
 		fontSize = AppDefaults.timelineFontSize
+		hideReadArticles = AppDefaults.hideReadArticles
 	}
 
 	/// The one place the row height is set — it depends on the layout and the font size.
@@ -1324,6 +1332,7 @@ private extension TimelineViewController {
 			return Set<Article>()
 		}
 
+		let readFilterEnabledTable = effectiveReadFilterEnabledTable(for: representedObjects)
 		var fetchedArticles = Set<Article>()
 		for fetchers in fetchers {
 			if (fetchers as? SidebarItem)?.readFiltered(readFilterEnabledTable: readFilterEnabledTable) ?? true {
@@ -1343,7 +1352,7 @@ private extension TimelineViewController {
 		precondition(Thread.isMainThread)
 		cancelPendingAsyncFetches()
 		let fetchers = representedObjects.compactMap { $0 as? ArticleFetcher }
-		let fetchOperation = FetchRequestOperation(id: fetchSerialNumber, readFilterEnabledTable: readFilterEnabledTable, fetchers: fetchers) { [weak self] (articles, operation) in
+		let fetchOperation = FetchRequestOperation(id: fetchSerialNumber, readFilterEnabledTable: effectiveReadFilterEnabledTable(for: representedObjects), fetchers: fetchers) { [weak self] (articles, operation) in
 			precondition(Thread.isMainThread)
 			guard !operation.isCanceled, let strongSelf = self, operation.id == strongSelf.fetchSerialNumber else {
 				return
@@ -1397,6 +1406,20 @@ private extension TimelineViewController {
 
 	func representedObjectsContainAnyFolder() -> Bool {
 		return representedObjects?.contains(where: { $0 is Folder }) ?? false
+	}
+
+	/// readFilterEnabledTable, plus the Hide Read Articles preference for items whose filter hasn’t been toggled.
+	func effectiveReadFilterEnabledTable(for representedObjects: [Any]) -> [SidebarItemIdentifier: Bool] {
+		guard AppDefaults.hideReadArticles else {
+			return readFilterEnabledTable
+		}
+		var table = readFilterEnabledTable
+		for case let sidebarItem as SidebarItem in representedObjects {
+			if let sidebarItemID = sidebarItem.sidebarItemID, table[sidebarItemID] == nil {
+				table[sidebarItemID] = true
+			}
+		}
+		return table
 	}
 
 	func seedReadFilterForFolders() {
