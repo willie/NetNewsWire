@@ -53,6 +53,7 @@ extension AppDefaults.Key {
 	static let defaultBrowserID = "defaultBrowserID"
 	static let sidebarSortType = "sidebarSortType"
 	static let sidebarSortAscending = "sidebarSortAscending"
+	static let hideReadArticles = "hideReadArticles"
 
 	// Hidden prefs
 	static let showDebugMenu = "ShowDebugMenu"
@@ -278,6 +279,11 @@ extension AppDefaults {
 
 	static var timelineShowsSeparators: Bool {
 		UserDefaults.standard.bool(forKey: Key.timelineShowsSeparators)
+	}
+
+	/// Hide read articles in timelines whose read filter hasn’t been toggled.
+	static var hideReadArticles: Bool {
+		UserDefaults.standard.bool(forKey: Key.hideReadArticles)
 	}
 
 	static var articleTextSize: ArticleTextSize {
