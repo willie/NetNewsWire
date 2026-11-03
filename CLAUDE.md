@@ -82,6 +82,7 @@ Just because unit tests pass doesn’t mean a given bug is fixed. It may not hav
 
 This is Willie’s fork. `main` is upstream plus his features and builds NNW+ (installed as /Applications/NNW+.app); it never goes upstream.
 
+- Install NNW+ with `./buildscripts/install-nnw-plus.sh` (Release build). Never install a Debug build to /Applications: Debug skips the refresh on launch.
 - `upstream` = Ranchero-Software/NetNewsWire, `origin` = willie/NetNewsWire.
 - `sidebar-sort-options`: upstream PR #5149 (sort feeds by name, unread count, last update). Only that PR’s commits; never commit NNW+-only work here.
 - `attention-sort`: NNW+ only, not sent upstream: Attention sort (per-feed open/share/star counts in FeedSettings, ported from NetNewsWire Lite 4).
